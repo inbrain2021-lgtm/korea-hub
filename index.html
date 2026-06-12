@@ -3,23 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Korea Hub — Batafsil ma'lumot</title>
+<title>Korea Hub — Janubiy Koreya Bozori</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&family=Noto+Sans:wght@400;600;800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0b0f1a;
-  --bg2: #111827;
-  --bg3: #1a2235;
-  --red: #C8102E;
-  --blue: #1a56ff;
-  --gold: #f5c518;
+  --bg:    #090e1a;
+  --bg2:   #0f1623;
+  --bg3:   #161f30;
+  --red:   #C8102E;
+  --blue:  #2563eb;
+  --gold:  #f5c518;
   --green: #10b981;
-  --text: #f0f4ff;
-  --muted: #6b7a9a;
-  --border: rgba(255,255,255,0.07);
+  --text:  #eef2ff;
+  --muted: #64748b;
+  --border: rgba(255,255,255,0.06);
   --radius: 16px;
 }
+
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 body {
@@ -30,253 +31,312 @@ body {
   overflow-x: hidden;
 }
 
-/* LANG SWITCHER */
-.lang-bar {
-  position: sticky; top: 0; z-index: 100;
-  display: flex; gap: 6px;
-  padding: 12px 16px;
-  background: rgba(11,15,26,0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  overflow-x: auto;
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0);    }
 }
+@keyframes pulse-ring {
+  0%   { transform:scale(1);   opacity:0.8; }
+  100% { transform:scale(2);   opacity:0;   }
+}
+@keyframes shimmer {
+  0%   { background-position:-200% center; }
+  100% { background-position: 200% center; }
+}
+@keyframes float {
+  0%,100% { transform:translateY(0)    rotate(0deg);  }
+  40%     { transform:translateY(-10px) rotate(2deg);  }
+  70%     { transform:translateY(-5px)  rotate(-1deg); }
+}
+@keyframes glow {
+  0%,100% { box-shadow:0 0 18px rgba(200,16,46,0.15); }
+  50%     { box-shadow:0 0 36px rgba(200,16,46,0.35); }
+}
+
+/* ── LANG BAR ── */
+.lang-bar {
+  position:sticky; top:0; z-index:100;
+  display:flex; gap:6px;
+  padding:10px 16px;
+  background:rgba(9,14,26,0.93);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  overflow-x:auto; scrollbar-width:none;
+}
+.lang-bar::-webkit-scrollbar { display:none; }
 .lang-btn {
-  flex-shrink: 0;
-  padding: 7px 16px;
-  border-radius: 30px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  font-size: 13px; font-weight: 600;
-  cursor: pointer; transition: all 0.2s;
-  font-family: 'Noto Sans KR', 'Noto Sans', sans-serif;
+  flex-shrink:0;
+  padding:6px 14px; border-radius:30px;
+  border:1px solid var(--border);
+  background:transparent; color:var(--muted);
+  font-size:12px; font-weight:600;
+  cursor:pointer; transition:all 0.2s;
+  font-family:'Noto Sans KR','Noto Sans',sans-serif;
 }
 .lang-btn.active {
-  background: var(--red);
-  border-color: var(--red);
-  color: white;
+  background:var(--red); border-color:var(--red); color:#fff;
+  box-shadow:0 0 14px rgba(200,16,46,0.45);
+}
+.lang-btn:hover:not(.active) {
+  border-color:rgba(255,255,255,0.14); color:var(--text);
 }
 
-/* HERO */
+/* ── HERO ── */
 .hero {
-  padding: 32px 20px 24px;
-  text-align: center;
-  background: linear-gradient(180deg, rgba(200,16,46,0.08) 0%, transparent 100%);
-  position: relative;
-  overflow: hidden;
+  padding:36px 20px 28px;
+  text-align:center;
+  position:relative; overflow:hidden;
+  background:radial-gradient(ellipse 80% 55% at 50% 0%, rgba(200,16,46,0.13) 0%, transparent 70%);
 }
-.hero::before {
-  content: '한국';
-  position: absolute;
-  font-family: 'Noto Sans KR', sans-serif;
-  font-size: 120px; font-weight: 900;
-  color: rgba(255,255,255,0.03);
-  top: -10px; right: -10px;
-  pointer-events: none;
+.hero-stripe {
+  position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--red) 0%, transparent 45%, transparent 55%, #003478 100%);
 }
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(200,16,46,0.15);
-  border: 1px solid rgba(200,16,46,0.3);
-  color: #ff6680; font-size: 11px;
-  font-family: 'IBM Plex Mono', monospace;
-  letter-spacing: 2px; padding: 5px 14px;
-  border-radius: 30px; margin-bottom: 16px;
-  text-transform: uppercase;
+.hero-bg {
+  position:absolute; font-family:'Noto Sans KR',sans-serif;
+  font-size:170px; font-weight:900;
+  color:rgba(255,255,255,0.025);
+  top:-30px; right:-15px;
+  pointer-events:none; user-select:none;
+  animation:float 9s ease-in-out infinite;
+}
+.live-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(16,185,129,0.1);
+  border:1px solid rgba(16,185,129,0.25);
+  color:#34d399; font-size:10px; font-weight:700;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:2px; padding:5px 14px; border-radius:30px;
+  margin-bottom:18px; text-transform:uppercase;
+  animation:fadeUp 0.5s ease both;
+}
+.live-dot {
+  width:7px; height:7px; border-radius:50%;
+  background:#10b981; position:relative; flex-shrink:0;
+}
+.live-dot::after {
+  content:''; position:absolute; inset:-4px;
+  border-radius:50%; border:1px solid #10b981;
+  animation:pulse-ring 1.5s ease-out infinite;
 }
 .hero-logo {
-  width: 90px; height: 90px;
-  border-radius: 22px;
-  margin: 0 auto 16px;
-  background: var(--bg2);
-  border: 2px solid var(--border);
-  overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 44px;
+  width:88px; height:88px; border-radius:22px;
+  margin:0 auto 18px;
+  background:linear-gradient(135deg, rgba(200,16,46,0.2), rgba(0,52,120,0.2));
+  border:1px solid rgba(200,16,46,0.3);
+  display:flex; align-items:center; justify-content:center;
+  font-size:44px;
+  animation:fadeUp 0.5s 0.1s ease both, glow 3s ease-in-out infinite;
 }
 .hero h1 {
-  font-size: 28px; font-weight: 900;
-  letter-spacing: -0.5px; margin-bottom: 8px;
-  line-height: 1.1;
+  font-size:34px; font-weight:900;
+  letter-spacing:-1px; margin-bottom:10px; line-height:1;
+  animation:fadeUp 0.5s 0.15s ease both;
 }
-.hero h1 span { color: var(--red); }
+.hero h1 .kr { color:var(--red); }
 .hero-sub {
-  color: var(--muted); font-size: 13px;
-  line-height: 1.6; max-width: 300px; margin: 0 auto;
+  color:var(--muted); font-size:13px;
+  line-height:1.7; max-width:280px; margin:0 auto;
+  animation:fadeUp 0.5s 0.2s ease both;
 }
 
-/* STATS ROW */
+/* ── STATS ── */
 .stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  padding: 0 16px 24px;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:8px; padding:0 16px 24px;
 }
 .stat {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 10px;
-  text-align: center;
+  background:var(--bg2);
+  border:1px solid var(--border); border-radius:var(--radius);
+  padding:14px 8px; text-align:center;
+  position:relative; overflow:hidden;
+  animation:fadeUp 0.5s 0.25s ease both;
+}
+.stat::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--ac, var(--red)); opacity:0.65;
 }
 .stat-num {
-  font-size: 22px; font-weight: 900;
-  display: block; margin-bottom: 2px;
+  font-size:20px; font-weight:900; display:block; margin-bottom:4px;
+  font-family:'IBM Plex Mono',monospace;
 }
-.stat-label { color: var(--muted); font-size: 10px; }
+.stat-label { color:var(--muted); font-size:10px; letter-spacing:0.5px; }
 
-/* SECTION */
-.section { padding: 0 16px 24px; }
+/* ── SECTION ── */
+.section { padding:0 16px 24px; animation:fadeUp 0.5s 0.3s ease both; }
 .section-title {
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 3px; color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 12px;
-  font-family: 'IBM Plex Mono', monospace;
-  display: flex; align-items: center; gap: 10px;
+  font-size:10px; font-weight:700; letter-spacing:3px;
+  color:var(--muted); text-transform:uppercase;
+  margin-bottom:14px; font-family:'IBM Plex Mono',monospace;
+  display:flex; align-items:center; gap:10px;
+}
+.section-title::before {
+  content:''; width:3px; height:14px;
+  background:var(--red); border-radius:2px; flex-shrink:0;
 }
 .section-title::after {
-  content: ''; flex: 1; height: 1px;
-  background: var(--border);
+  content:''; flex:1; height:1px; background:var(--border);
 }
 
-/* CHANNELS */
+/* ── CHANNEL CARDS ── */
 .channel-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 10px;
-  display: flex; align-items: center; gap: 14px;
-  text-decoration: none; color: inherit;
-  transition: border-color 0.2s;
-  cursor: pointer;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px 16px; margin-bottom:8px;
+  display:flex; align-items:center; gap:14px;
+  text-decoration:none; color:inherit;
+  transition:border-color 0.2s, background 0.2s, transform 0.15s;
+  cursor:pointer; position:relative; overflow:hidden;
 }
-.channel-card:active { border-color: var(--red); }
+.channel-card::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(255,255,255,0.025) 0%, transparent 60%);
+  pointer-events:none;
+}
+.channel-card:active {
+  border-color:var(--red); background:var(--bg3);
+  transform:scale(0.985);
+}
 .channel-icon {
-  width: 46px; height: 46px;
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; flex-shrink: 0;
+  width:46px; height:46px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; flex-shrink:0;
 }
-.ch-auto { background: rgba(200,16,46,0.15); }
-.ch-tech { background: rgba(26,86,255,0.15); }
-.ch-blog { background: rgba(245,197,24,0.15); }
-.ch-bot  { background: rgba(16,185,129,0.15); }
-.channel-info { flex: 1; }
-.channel-name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
-.channel-desc { color: var(--muted); font-size: 12px; }
-.channel-arrow { color: var(--muted); font-size: 18px; }
+.ch-auto { background:rgba(200,16,46,0.15);  box-shadow:0 4px 10px rgba(200,16,46,0.1); }
+.ch-tech { background:rgba(37,99,235,0.15);  box-shadow:0 4px 10px rgba(37,99,235,0.1); }
+.ch-blog { background:rgba(245,197,24,0.15); box-shadow:0 4px 10px rgba(245,197,24,0.1); }
+.ch-bot  { background:rgba(16,185,129,0.15); box-shadow:0 4px 10px rgba(16,185,129,0.1); }
+.channel-info { flex:1; min-width:0; }
+.channel-name { font-weight:700; font-size:14px; margin-bottom:3px; }
+.channel-desc { color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.channel-arrow {
+  color:var(--muted); font-size:20px; flex-shrink:0;
+  transition:transform 0.2s, color 0.2s;
+}
+.channel-card:active .channel-arrow { transform:translateX(3px); color:var(--red); }
 
-/* STEPS */
-.steps { display: flex; flex-direction: column; gap: 10px; }
+/* ── STEPS ── */
+.steps { display:flex; flex-direction:column; gap:8px; }
 .step {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px 16px;
-  display: flex; gap: 14px; align-items: flex-start;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px 16px;
+  display:flex; gap:14px; align-items:flex-start;
+  position:relative;
+}
+.step:not(:last-child)::after {
+  content:''; position:absolute;
+  left:29px; bottom:-8px;
+  width:1px; height:8px;
+  background:rgba(200,16,46,0.3);
 }
 .step-num {
-  width: 30px; height: 30px;
-  border-radius: 8px;
-  background: rgba(200,16,46,0.15);
-  border: 1px solid rgba(200,16,46,0.25);
-  color: var(--red);
-  font-weight: 800; font-size: 14px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  font-family: 'IBM Plex Mono', monospace;
+  width:28px; height:28px; border-radius:8px;
+  background:rgba(200,16,46,0.12);
+  border:1px solid rgba(200,16,46,0.25);
+  color:var(--red); font-weight:800; font-size:13px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-family:'IBM Plex Mono',monospace;
 }
-.step-content { flex: 1; }
-.step-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
-.step-desc { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.step-content { flex:1; }
+.step-title { font-weight:700; font-size:13px; margin-bottom:3px; }
+.step-desc { color:var(--muted); font-size:11px; line-height:1.6; }
 
-/* FEATURES */
-.features { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+/* ── FEATURES ── */
+.features { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
 .feature {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 14px;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px;
 }
-.feature-icon { font-size: 24px; margin-bottom: 8px; }
-.feature-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
-.feature-desc { color: var(--muted); font-size: 11px; line-height: 1.5; }
+.feature-icon { font-size:26px; margin-bottom:8px; display:block; }
+.feature-title { font-weight:700; font-size:12px; margin-bottom:4px; }
+.feature-desc { color:var(--muted); font-size:11px; line-height:1.5; }
 
-/* PRICING */
+/* ── PRICING ── */
 .price-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 10px;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--radius); overflow:hidden;
+}
+.price-header {
+  padding:10px 16px;
+  background:rgba(200,16,46,0.08);
+  border-bottom:1px solid var(--border);
+  font-size:10px; font-weight:700; color:var(--red);
+  font-family:'IBM Plex Mono',monospace; letter-spacing:1.5px; text-transform:uppercase;
 }
 .price-row {
-  display: flex; justify-content: space-between;
-  align-items: center; padding: 8px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:11px 16px; border-bottom:1px solid var(--border); font-size:13px;
 }
-.price-row:last-child { border-bottom: none; }
-.price-label { color: var(--muted); }
-.price-val { font-weight: 700; }
-.price-free { color: var(--green); }
-.price-paid { color: var(--gold); }
+.price-row:last-child { border-bottom:none; }
+.price-label { color:var(--muted); }
+.price-val { font-weight:700; font-family:'IBM Plex Mono',monospace; font-size:12px; }
+.price-free { color:var(--green); }
+.price-paid { color:var(--gold); }
 
-/* ADMIN */
+/* ── ADMIN ── */
 .admin-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  display: flex; gap: 14px; align-items: center;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:16px;
+  display:flex; gap:14px; align-items:center;
 }
 .admin-avatar {
-  width: 50px; height: 50px;
-  border-radius: 14px;
-  background: rgba(200,16,46,0.15);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 26px; flex-shrink: 0;
+  width:52px; height:52px; border-radius:14px;
+  background:linear-gradient(135deg, rgba(200,16,46,0.3), rgba(200,16,46,0.08));
+  border:1px solid rgba(200,16,46,0.25);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; font-weight:800; color:var(--red);
+  flex-shrink:0; font-family:'IBM Plex Mono',monospace;
 }
-.admin-name { font-weight: 700; font-size: 15px; }
-.admin-user { color: var(--blue); font-size: 13px; }
-.admin-role { color: var(--muted); font-size: 11px; margin-top: 2px; }
+.admin-name { font-weight:700; font-size:15px; }
+.admin-user { color:var(--blue); font-size:12px; margin-top:2px; font-family:'IBM Plex Mono',monospace; }
+.admin-role { color:var(--muted); font-size:11px; margin-top:3px; }
 
-/* CTA */
+/* ── CTA ── */
 .cta {
-  margin: 0 16px 32px;
-  background: linear-gradient(135deg, var(--red), #8b0000);
-  border-radius: var(--radius);
-  padding: 20px;
-  text-align: center;
+  margin:0 16px 32px;
+  background:linear-gradient(135deg, #8b0018 0%, var(--red) 50%, #e8153a 100%);
+  border-radius:var(--radius); padding:22px 20px;
+  text-align:center; position:relative; overflow:hidden;
 }
-.cta-title { font-size: 18px; font-weight: 900; margin-bottom: 6px; }
-.cta-sub { color: rgba(255,255,255,0.75); font-size: 13px; margin-bottom: 16px; }
+.cta::before {
+  content:'한'; position:absolute;
+  font-family:'Noto Sans KR',sans-serif;
+  font-size:130px; font-weight:900;
+  color:rgba(255,255,255,0.07);
+  top:-20px; right:-10px; pointer-events:none;
+}
+.cta-title { font-size:19px; font-weight:900; margin-bottom:6px; position:relative; }
+.cta-sub { color:rgba(255,255,255,0.75); font-size:12px; margin-bottom:18px; position:relative; }
 .cta-btn {
-  display: inline-block;
-  background: white; color: var(--red);
-  font-weight: 800; font-size: 14px;
-  padding: 12px 28px; border-radius: 30px;
-  border: none; cursor: pointer;
-  text-decoration: none;
+  display:inline-block;
+  background:white; color:var(--red);
+  font-weight:800; font-size:14px;
+  padding:12px 32px; border-radius:30px;
+  border:none; cursor:pointer; text-decoration:none;
+  position:relative; overflow:hidden;
+  transition:transform 0.15s;
+  background-size:200% auto;
 }
+.cta-btn::after {
+  content:''; position:absolute; top:0; left:-100%;
+  width:100%; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+  animation:shimmer 2.5s ease-in-out infinite;
+}
+.cta-btn:active { transform:scale(0.96); }
 
-/* LANG CONTENT */
-.lang-content { display: none; }
-.lang-content.active { display: block; }
+/* ── LANG CONTENT ── */
+.lang-content { display:none; }
+.lang-content.active { display:block; }
 
-/* Telegram theme */
+/* ── LIGHT THEME (media fallback) ── */
 @media (prefers-color-scheme: light) {
   :root {
-    --bg: #f5f7ff;
-    --bg2: #ffffff;
-    --bg3: #eef1fa;
-    --text: #111827;
-    --muted: #6b7280;
-    --border: rgba(0,0,0,0.08);
+    --bg:#f0f4ff; --bg2:#ffffff; --bg3:#e8edf8;
+    --text:#0f172a; --muted:#64748b; --border:rgba(0,0,0,0.07);
   }
-  .hero::before { color: rgba(0,0,0,0.03); }
+  .hero-bg { color:rgba(0,0,0,0.025); }
+  .hero { background:radial-gradient(ellipse 80% 55% at 50% 0%, rgba(200,16,46,0.07) 0%, transparent 70%); }
 }
 </style>
 </head>
@@ -284,32 +344,34 @@ body {
 
 <!-- LANG BAR -->
 <div class="lang-bar">
-  <button class="lang-btn active" onclick="setLang('uz')">🇺🇿 O'zbek</button>
-  <button class="lang-btn" onclick="setLang('ru')">🇷🇺 Русский</button>
-  <button class="lang-btn" onclick="setLang('ko')">🇰🇷 한국어</button>
-  <button class="lang-btn" onclick="setLang('en')">🇬🇧 English</button>
+  <button class="lang-btn active" onclick="setLang('uz',this)">🇺🇿 O'zbek</button>
+  <button class="lang-btn" onclick="setLang('ru',this)">🇷🇺 Русский</button>
+  <button class="lang-btn" onclick="setLang('ko',this)">🇰🇷 한국어</button>
+  <button class="lang-btn" onclick="setLang('en',this)">🇬🇧 English</button>
 </div>
 
-<!-- ========== O'ZBEK ========== -->
+<!-- ═══════════ O'ZBEK ═══════════ -->
 <div class="lang-content active" id="lang-uz">
 
 <div class="hero">
-  <div class="hero-badge">🇰🇷 E'lonlar Markazi</div>
+  <div class="hero-stripe"></div>
+  <div class="hero-bg">한국</div>
+  <div class="live-badge"><span class="live-dot"></span> JONLI ISHLAYDI</div>
   <div class="hero-logo">🏪</div>
-  <h1>KOREA <span>HUB</span></h1>
+  <h1><span class="kr">KOREA</span> HUB</h1>
   <p class="hero-sub">Janubiy Koreyadagi o'zbek va o'rta osiyaliklar uchun yagona bozor</p>
 </div>
 
 <div class="stats">
-  <div class="stat">
+  <div class="stat" style="--ac:var(--red)">
     <span class="stat-num" style="color:var(--red)">3</span>
     <div class="stat-label">Kanal</div>
   </div>
-  <div class="stat">
+  <div class="stat" style="--ac:var(--gold)">
     <span class="stat-num" style="color:var(--gold)">7/24</span>
     <div class="stat-label">Ishlaydi</div>
   </div>
-  <div class="stat">
+  <div class="stat" style="--ac:var(--green)">
     <span class="stat-num" style="color:var(--green)">BEPUL</span>
     <div class="stat-label">E'lon</div>
   </div>
@@ -317,39 +379,35 @@ body {
 
 <div class="section">
   <div class="section-title">Kanallar</div>
-
-  <a class="channel-card" href="https://t.me/avto_hub_kr" onclick="openLink('https://t.me/avto_hub_kr')">
+  <a class="channel-card" href="https://t.me/avto_hub_kr" onclick="openLink('https://t.me/avto_hub_kr');return false;">
     <div class="channel-icon ch-auto">🚗</div>
     <div class="channel-info">
       <div class="channel-name">Koryo Bozor | Avto</div>
-      <div class="channel-desc">Avtomobil sotish • Ijara • Ehtiyot qismlar</div>
+      <div class="channel-desc">Avtomobil sotish · Ijara · Ehtiyot qismlar</div>
     </div>
     <div class="channel-arrow">›</div>
   </a>
-
-  <a class="channel-card" href="https://t.me/technique_kr" onclick="openLink('https://t.me/technique_kr')">
+  <a class="channel-card" href="https://t.me/technique_kr" onclick="openLink('https://t.me/technique_kr');return false;">
     <div class="channel-icon ch-tech">📱</div>
     <div class="channel-info">
       <div class="channel-name">Koryo Bozor | Texnika</div>
-      <div class="channel-desc">Telefon • Noutbuk • Maishiy texnika</div>
+      <div class="channel-desc">Telefon · Noutbuk · Maishiy texnika</div>
     </div>
     <div class="channel-arrow">›</div>
   </a>
-
-  <a class="channel-card" href="https://t.me/OqDaftar" onclick="openLink('https://t.me/OqDaftar')">
+  <a class="channel-card" href="https://t.me/OqDaftar" onclick="openLink('https://t.me/OqDaftar');return false;">
     <div class="channel-icon ch-blog">✍️</div>
     <div class="channel-info">
       <div class="channel-name">Oq Daftar</div>
-      <div class="channel-desc">Shaxsiy blog • Fikrlar • Koreya hayoti</div>
+      <div class="channel-desc">Shaxsiy blog · Fikrlar · Koreya hayoti</div>
     </div>
     <div class="channel-arrow">›</div>
   </a>
-
-  <a class="channel-card" href="https://t.me/k_auto_ai_bot" onclick="openLink('https://t.me/k_auto_ai_bot')">
+  <a class="channel-card" href="https://t.me/k_auto_ai_bot" onclick="openLink('https://t.me/k_auto_ai_bot');return false;">
     <div class="channel-icon ch-bot">🤖</div>
     <div class="channel-info">
       <div class="channel-name">AI Bot</div>
-      <div class="channel-desc">E'lon berish boti • 7/24 ishlaydi</div>
+      <div class="channel-desc">E'lon berish boti · 7/24 ishlaydi</div>
     </div>
     <div class="channel-arrow">›</div>
   </a>
@@ -376,14 +434,14 @@ body {
       <div class="step-num">3</div>
       <div class="step-content">
         <div class="step-title">Ma'lumot kiriting</div>
-        <div class="step-desc">Sarlavha, tavsif, narx, joylashuv, aloqa. Yoki tayyor shablonni tashlang — AI o'zi ajratadi!</div>
+        <div class="step-desc">Sarlavha, tavsif, narx, manzil, aloqa. Yoki tayyor shablonni tashlang — AI o'zi ajratadi!</div>
       </div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
       <div class="step-content">
         <div class="step-title">Rasm yuborish (ixtiyoriy)</div>
-        <div class="step-desc">1 dan 5 tagacha rasm va video yuborishingiz mumkin</div>
+        <div class="step-desc">1 dan 5 tagacha rasm yuborishingiz mumkin</div>
       </div>
     </div>
     <div class="step">
@@ -400,22 +458,22 @@ body {
   <div class="section-title">Afzalliklar</div>
   <div class="features">
     <div class="feature">
-      <div class="feature-icon">⚡️</div>
+      <span class="feature-icon">⚡️</span>
       <div class="feature-title">7/24 ishlaydi</div>
       <div class="feature-desc">Istalgan vaqt e'lon bering — admin kutmaysiz</div>
     </div>
     <div class="feature">
-      <div class="feature-icon">🤖</div>
+      <span class="feature-icon">🤖</span>
       <div class="feature-title">AI nazorat</div>
       <div class="feature-desc">Sun'iy intellekt e'lonni tekshirib yaxshilaydi</div>
     </div>
     <div class="feature">
-      <div class="feature-icon">🆓</div>
+      <span class="feature-icon">🆓</span>
       <div class="feature-title">Bepul</div>
-      <div class="feature-desc">Oyiga 1 ta e'lon mutlaqo bepul</div>
+      <div class="feature-desc">Hozircha barcha e'lonlar mutlaqo bepul!</div>
     </div>
     <div class="feature">
-      <div class="feature-icon">🛡</div>
+      <span class="feature-icon">🛡</span>
       <div class="feature-title">Ishonchli</div>
       <div class="feature-desc">Faqat haqiqiy odamlar — bot va spam yo'q</div>
     </div>
@@ -425,8 +483,9 @@ body {
 <div class="section">
   <div class="section-title">Narxlar</div>
   <div class="price-card">
+    <div class="price-header">// TARIF REJASI</div>
     <div class="price-row">
-      <span class="price-label">🎁 Oylik bepul e'lon</span>
+      <span class="price-label">🎁 Hozircha barcha e'lonlar</span>
       <span class="price-val price-free">BEPUL</span>
     </div>
     <div class="price-row">
@@ -455,11 +514,11 @@ body {
 <div class="section">
   <div class="section-title">Admin</div>
   <div class="admin-card">
-    <div class="admin-avatar">👤</div>
+    <div class="admin-avatar">AB</div>
     <div>
       <div class="admin-name">Abdulloh</div>
       <div class="admin-user">@Yuoonee</div>
-      <div class="admin-role">Korea Hub bosh admin • 🇰🇷 Seoul</div>
+      <div class="admin-role">Korea Hub bosh admin · 🇰🇷 Seoul</div>
     </div>
   </div>
 </div>
@@ -467,51 +526,44 @@ body {
 <div class="cta">
   <div class="cta-title">Hozir boshlang! 🚀</div>
   <div class="cta-sub">Bir link — uchala kanalga a'zo bo'ling</div>
-  <a class="cta-btn" onclick="openLink('https://t.me/addlist/jNJ7xBYHuBszMmM1')">A'zo bo'lish →</a>
+  <a class="cta-btn" href="https://t.me/addlist/jNJ7xBYHuBszMmM1" onclick="openLink('https://t.me/addlist/jNJ7xBYHuBszMmM1');return false;">A'zo bo'lish →</a>
 </div>
 
-</div>
+</div><!-- /lang-uz -->
 
-<!-- ========== RUSSIAN ========== -->
+<!-- ═══════════ RUSSIAN ═══════════ -->
 <div class="lang-content" id="lang-ru">
 
 <div class="hero">
-  <div class="hero-badge">🇰🇷 Центр объявлений</div>
+  <div class="hero-stripe"></div>
+  <div class="hero-bg">한국</div>
+  <div class="live-badge"><span class="live-dot"></span> ОНЛАЙН</div>
   <div class="hero-logo">🏪</div>
-  <h1>KOREA <span>HUB</span></h1>
+  <h1><span class="kr">KOREA</span> HUB</h1>
   <p class="hero-sub">Единый рынок для узбеков и среднеазиатцев в Южной Корее</p>
 </div>
 
 <div class="stats">
-  <div class="stat"><span class="stat-num" style="color:var(--red)">3</span><div class="stat-label">Канала</div></div>
-  <div class="stat"><span class="stat-num" style="color:var(--gold)">7/24</span><div class="stat-label">Работает</div></div>
-  <div class="stat"><span class="stat-num" style="color:var(--green)">БЕСП.</span><div class="stat-label">Объявление</div></div>
+  <div class="stat" style="--ac:var(--red)"><span class="stat-num" style="color:var(--red)">3</span><div class="stat-label">Канала</div></div>
+  <div class="stat" style="--ac:var(--gold)"><span class="stat-num" style="color:var(--gold)">7/24</span><div class="stat-label">Работает</div></div>
+  <div class="stat" style="--ac:var(--green)"><span class="stat-num" style="color:var(--green)">БЕСП.</span><div class="stat-label">Объявление</div></div>
 </div>
 
 <div class="section">
   <div class="section-title">Каналы</div>
-  <a class="channel-card" onclick="openLink('https://t.me/avto_hub_kr')">
+  <a class="channel-card" href="https://t.me/avto_hub_kr" onclick="openLink('https://t.me/avto_hub_kr');return false;">
     <div class="channel-icon ch-auto">🚗</div>
-    <div class="channel-info">
-      <div class="channel-name">Koryo Bozor | Авто</div>
-      <div class="channel-desc">Продажа авто • Аренда • Запчасти</div>
-    </div>
+    <div class="channel-info"><div class="channel-name">Koryo Bozor | Авто</div><div class="channel-desc">Продажа авто · Аренда · Запчасти</div></div>
     <div class="channel-arrow">›</div>
   </a>
-  <a class="channel-card" onclick="openLink('https://t.me/technique_kr')">
+  <a class="channel-card" href="https://t.me/technique_kr" onclick="openLink('https://t.me/technique_kr');return false;">
     <div class="channel-icon ch-tech">📱</div>
-    <div class="channel-info">
-      <div class="channel-name">Koryo Bozor | Техника</div>
-      <div class="channel-desc">Телефоны • Ноутбуки • Бытовая техника</div>
-    </div>
+    <div class="channel-info"><div class="channel-name">Koryo Bozor | Техника</div><div class="channel-desc">Телефоны · Ноутбуки · Бытовая техника</div></div>
     <div class="channel-arrow">›</div>
   </a>
-  <a class="channel-card" onclick="openLink('https://t.me/k_auto_ai_bot')">
+  <a class="channel-card" href="https://t.me/k_auto_ai_bot" onclick="openLink('https://t.me/k_auto_ai_bot');return false;">
     <div class="channel-icon ch-bot">🤖</div>
-    <div class="channel-info">
-      <div class="channel-name">AI Бот</div>
-      <div class="channel-desc">Бот для подачи объявлений • 7/24</div>
-    </div>
+    <div class="channel-info"><div class="channel-name">AI Бот</div><div class="channel-desc">Бот для подачи объявлений · 7/24</div></div>
     <div class="channel-arrow">›</div>
   </a>
 </div>
@@ -519,32 +571,32 @@ body {
 <div class="section">
   <div class="section-title">Как подать объявление</div>
   <div class="steps">
-    <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Откройте бота</div><div class="step-desc">Перейдите в @k_auto_ai_bot и нажмите /start</div></div></div>
+    <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Откройте бота</div><div class="step-desc">@k_auto_ai_bot → /start</div></div></div>
     <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Выберите категорию</div><div class="step-desc">🚗 Авто, 📱 Техника или 🛠 Услуги</div></div></div>
     <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Введите данные</div><div class="step-desc">Или отправьте готовый шаблон — AI сам разберёт!</div></div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Добавьте фото</div><div class="step-desc">До 5 фото и видео</div></div></div>
-    <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Готово!</div><div class="step-desc">AI проверяет → автоматически публикует. Ждать модератора НЕ НУЖНО!</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Добавьте фото</div><div class="step-desc">До 5 фото</div></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Готово!</div><div class="step-desc">AI проверяет → публикует автоматически. Ждать модератора НЕ НУЖНО!</div></div></div>
   </div>
 </div>
 
 <div class="section">
   <div class="section-title">Преимущества</div>
   <div class="features">
-    <div class="feature"><div class="feature-icon">⚡️</div><div class="feature-title">Круглосуточно</div><div class="feature-desc">Подавайте в любое время</div></div>
-    <div class="feature"><div class="feature-icon">🤖</div><div class="feature-title">ИИ проверка</div><div class="feature-desc">Искусственный интеллект улучшает объявление</div></div>
-    <div class="feature"><div class="feature-icon">🆓</div><div class="feature-title">Бесплатно</div><div class="feature-desc">1 объявление в месяц — бесплатно</div></div>
-    <div class="feature"><div class="feature-icon">🛡</div><div class="feature-title">Надёжно</div><div class="feature-desc">Только реальные люди, без ботов и спама</div></div>
+    <div class="feature"><span class="feature-icon">⚡️</span><div class="feature-title">Круглосуточно</div><div class="feature-desc">Подавайте в любое время</div></div>
+    <div class="feature"><span class="feature-icon">🤖</span><div class="feature-title">ИИ проверка</div><div class="feature-desc">Искусственный интеллект улучшает объявление</div></div>
+    <div class="feature"><span class="feature-icon">🆓</span><div class="feature-title">Бесплатно</div><div class="feature-desc">Сейчас все объявления бесплатно!</div></div>
+    <div class="feature"><span class="feature-icon">🛡</span><div class="feature-title">Надёжно</div><div class="feature-desc">Только реальные люди, без ботов и спама</div></div>
   </div>
 </div>
 
 <div class="section">
   <div class="section-title">Администратор</div>
   <div class="admin-card">
-    <div class="admin-avatar">👤</div>
+    <div class="admin-avatar">AB</div>
     <div>
       <div class="admin-name">Abdulloh</div>
       <div class="admin-user">@Yuoonee</div>
-      <div class="admin-role">Главный админ Korea Hub • 🇰🇷 Сеул</div>
+      <div class="admin-role">Главный админ Korea Hub · 🇰🇷 Сеул</div>
     </div>
   </div>
 </div>
@@ -552,51 +604,44 @@ body {
 <div class="cta">
   <div class="cta-title">Начните прямо сейчас! 🚀</div>
   <div class="cta-sub">Один линк — три канала сразу</div>
-  <a class="cta-btn" onclick="openLink('https://t.me/addlist/jNJ7xBYHuBszMmM1')">Подписаться →</a>
+  <a class="cta-btn" href="https://t.me/addlist/jNJ7xBYHuBszMmM1" onclick="openLink('https://t.me/addlist/jNJ7xBYHuBszMmM1');return false;">Подписаться →</a>
 </div>
 
-</div>
+</div><!-- /lang-ru -->
 
-<!-- ========== KOREAN ========== -->
+<!-- ═══════════ KOREAN ═══════════ -->
 <div class="lang-content" id="lang-ko">
 
 <div class="hero">
-  <div class="hero-badge">🇰🇷 광고 센터</div>
+  <div class="hero-stripe"></div>
+  <div class="hero-bg">한국</div>
+  <div class="live-badge"><span class="live-dot"></span> 실시간 운영중</div>
   <div class="hero-logo">🏪</div>
-  <h1>KOREA <span>HUB</span></h1>
+  <h1><span class="kr">KOREA</span> HUB</h1>
   <p class="hero-sub" style="font-family:'Noto Sans KR',sans-serif">한국 내 우즈베크·중앙아시아 커뮤니티를 위한 통합 마켓</p>
 </div>
 
 <div class="stats">
-  <div class="stat"><span class="stat-num" style="color:var(--red)">3</span><div class="stat-label">채널</div></div>
-  <div class="stat"><span class="stat-num" style="color:var(--gold)">24시</span><div class="stat-label">운영</div></div>
-  <div class="stat"><span class="stat-num" style="color:var(--green)">무료</span><div class="stat-label">광고</div></div>
+  <div class="stat" style="--ac:var(--red)"><span class="stat-num" style="color:var(--red)">3</span><div class="stat-label">채널</div></div>
+  <div class="stat" style="--ac:var(--gold)"><span class="stat-num" style="color:var(--gold)">24시</span><div class="stat-label">운영</div></div>
+  <div class="stat" style="--ac:var(--green)"><span class="stat-num" style="color:var(--green)">무료</span><div class="stat-label">광고</div></div>
 </div>
 
 <div class="section">
   <div class="section-title">채널 목록</div>
-  <a class="channel-card" onclick="openLink('https://t.me/avto_hub_kr')">
+  <a class="channel-card" href="https://t.me/avto_hub_kr" onclick="openLink('https://t.me/avto_hub_kr');return false;">
     <div class="channel-icon ch-auto">🚗</div>
-    <div class="channel-info">
-      <div class="channel-name" style="font-family:'Noto Sans KR',sans-serif">자동차 채널</div>
-      <div class="channel-desc">판매 • 렌트 • 부품</div>
-    </div>
+    <div class="channel-info"><div class="channel-name" style="font-family:'Noto Sans KR',sans-serif">자동차 채널</div><div class="channel-desc">판매 · 렌트 · 부품</div></div>
     <div class="channel-arrow">›</div>
   </a>
-  <a class="channel-card" onclick="openLink('https://t.me/technique_kr')">
+  <a class="channel-card" href="https://t.me/technique_kr" onclick="openLink('https://t.me/technique_kr');return false;">
     <div class="channel-icon ch-tech">📱</div>
-    <div class="channel-info">
-      <div class="channel-name" style="font-family:'Noto Sans KR',sans-serif">전자제품 채널</div>
-      <div class="channel-desc">휴대폰 • 노트북 • 가전제품</div>
-    </div>
+    <div class="channel-info"><div class="channel-name" style="font-family:'Noto Sans KR',sans-serif">전자제품 채널</div><div class="channel-desc">휴대폰 · 노트북 · 가전제품</div></div>
     <div class="channel-arrow">›</div>
   </a>
-  <a class="channel-card" onclick="openLink('https://t.me/k_auto_ai_bot')">
+  <a class="channel-card" href="https://t.me/k_auto_ai_bot" onclick="openLink('https://t.me/k_auto_ai_bot');return false;">
     <div class="channel-icon ch-bot">🤖</div>
-    <div class="channel-info">
-      <div class="channel-name" style="font-family:'Noto Sans KR',sans-serif">AI 봇</div>
-      <div class="channel-desc">광고 등록 봇 • 24시간</div>
-    </div>
+    <div class="channel-info"><div class="channel-name" style="font-family:'Noto Sans KR',sans-serif">AI 봇</div><div class="channel-desc">광고 등록 봇 · 24시간</div></div>
     <div class="channel-arrow">›</div>
   </a>
 </div>
@@ -607,7 +652,7 @@ body {
     <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title" style="font-family:'Noto Sans KR',sans-serif">봇 열기</div><div class="step-desc">@k_auto_ai_bot → /start</div></div></div>
     <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title" style="font-family:'Noto Sans KR',sans-serif">카테고리 선택</div><div class="step-desc">🚗 자동차, 📱 전자제품, 🛠 서비스</div></div></div>
     <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title" style="font-family:'Noto Sans KR',sans-serif">정보 입력</div><div class="step-desc">제목, 설명, 가격, 위치, 연락처 입력</div></div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title" style="font-family:'Noto Sans KR',sans-serif">사진 추가 (선택)</div><div class="step-desc">최대 5장의 사진과 동영상</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title" style="font-family:'Noto Sans KR',sans-serif">사진 추가 (선택)</div><div class="step-desc">최대 5장의 사진</div></div></div>
     <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title" style="font-family:'Noto Sans KR',sans-serif">자동 게시!</div><div class="step-desc">AI 검토 후 자동으로 채널에 게시됩니다</div></div></div>
   </div>
 </div>
@@ -615,11 +660,11 @@ body {
 <div class="section">
   <div class="section-title">관리자</div>
   <div class="admin-card">
-    <div class="admin-avatar">👤</div>
+    <div class="admin-avatar">AB</div>
     <div>
       <div class="admin-name">Abdulloh</div>
       <div class="admin-user">@Yuoonee</div>
-      <div class="admin-role" style="font-family:'Noto Sans KR',sans-serif">Korea Hub 관리자 • 🇰🇷 서울</div>
+      <div class="admin-role" style="font-family:'Noto Sans KR',sans-serif">Korea Hub 관리자 · 🇰🇷 서울</div>
     </div>
   </div>
 </div>
@@ -627,51 +672,44 @@ body {
 <div class="cta">
   <div class="cta-title" style="font-family:'Noto Sans KR',sans-serif">지금 시작하세요! 🚀</div>
   <div class="cta-sub" style="font-family:'Noto Sans KR',sans-serif">링크 하나로 세 채널 구독</div>
-  <a class="cta-btn" onclick="openLink('https://t.me/addlist/jNJ7xBYHuBszMmM1')">구독하기 →</a>
+  <a class="cta-btn" href="https://t.me/addlist/jNJ7xBYHuBszMmM1" onclick="openLink('https://t.me/addlist/jNJ7xBYHuBszMmM1');return false;">구독하기 →</a>
 </div>
 
-</div>
+</div><!-- /lang-ko -->
 
-<!-- ========== ENGLISH ========== -->
+<!-- ═══════════ ENGLISH ═══════════ -->
 <div class="lang-content" id="lang-en">
 
 <div class="hero">
-  <div class="hero-badge">🇰🇷 Classifieds Hub</div>
+  <div class="hero-stripe"></div>
+  <div class="hero-bg">한국</div>
+  <div class="live-badge"><span class="live-dot"></span> LIVE &amp; ACTIVE</div>
   <div class="hero-logo">🏪</div>
-  <h1>KOREA <span>HUB</span></h1>
-  <p class="hero-sub">The one-stop marketplace for Uzbeks & Central Asians in South Korea</p>
+  <h1><span class="kr">KOREA</span> HUB</h1>
+  <p class="hero-sub">The one-stop marketplace for Uzbeks &amp; Central Asians in South Korea</p>
 </div>
 
 <div class="stats">
-  <div class="stat"><span class="stat-num" style="color:var(--red)">3</span><div class="stat-label">Channels</div></div>
-  <div class="stat"><span class="stat-num" style="color:var(--gold)">24/7</span><div class="stat-label">Active</div></div>
-  <div class="stat"><span class="stat-num" style="color:var(--green)">FREE</span><div class="stat-label">Listing</div></div>
+  <div class="stat" style="--ac:var(--red)"><span class="stat-num" style="color:var(--red)">3</span><div class="stat-label">Channels</div></div>
+  <div class="stat" style="--ac:var(--gold)"><span class="stat-num" style="color:var(--gold)">24/7</span><div class="stat-label">Active</div></div>
+  <div class="stat" style="--ac:var(--green)"><span class="stat-num" style="color:var(--green)">FREE</span><div class="stat-label">Listing</div></div>
 </div>
 
 <div class="section">
   <div class="section-title">Our Channels</div>
-  <a class="channel-card" onclick="openLink('https://t.me/avto_hub_kr')">
+  <a class="channel-card" href="https://t.me/avto_hub_kr" onclick="openLink('https://t.me/avto_hub_kr');return false;">
     <div class="channel-icon ch-auto">🚗</div>
-    <div class="channel-info">
-      <div class="channel-name">Koryo Bozor | Auto</div>
-      <div class="channel-desc">Cars for sale • Rental • Auto parts</div>
-    </div>
+    <div class="channel-info"><div class="channel-name">Koryo Bozor | Auto</div><div class="channel-desc">Cars for sale · Rental · Auto parts</div></div>
     <div class="channel-arrow">›</div>
   </a>
-  <a class="channel-card" onclick="openLink('https://t.me/technique_kr')">
+  <a class="channel-card" href="https://t.me/technique_kr" onclick="openLink('https://t.me/technique_kr');return false;">
     <div class="channel-icon ch-tech">📱</div>
-    <div class="channel-info">
-      <div class="channel-name">Koryo Bozor | Tech</div>
-      <div class="channel-desc">Phones • Laptops • Home appliances</div>
-    </div>
+    <div class="channel-info"><div class="channel-name">Koryo Bozor | Tech</div><div class="channel-desc">Phones · Laptops · Home appliances</div></div>
     <div class="channel-arrow">›</div>
   </a>
-  <a class="channel-card" onclick="openLink('https://t.me/k_auto_ai_bot')">
+  <a class="channel-card" href="https://t.me/k_auto_ai_bot" onclick="openLink('https://t.me/k_auto_ai_bot');return false;">
     <div class="channel-icon ch-bot">🤖</div>
-    <div class="channel-info">
-      <div class="channel-name">AI Bot</div>
-      <div class="channel-desc">Post listings instantly • 24/7</div>
-    </div>
+    <div class="channel-info"><div class="channel-name">AI Bot</div><div class="channel-desc">Post listings instantly · 24/7</div></div>
     <div class="channel-arrow">›</div>
   </a>
 </div>
@@ -681,8 +719,8 @@ body {
   <div class="steps">
     <div class="step"><div class="step-num">1</div><div class="step-content"><div class="step-title">Open the bot</div><div class="step-desc">Go to @k_auto_ai_bot and press /start</div></div></div>
     <div class="step"><div class="step-num">2</div><div class="step-content"><div class="step-title">Choose a category</div><div class="step-desc">🚗 Auto, 📱 Tech, or 🛠 Services</div></div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Enter details</div><div class="step-desc">Or paste a ready template — AI will parse it automatically!</div></div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Add photos (optional)</div><div class="step-desc">Up to 5 photos and videos</div></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-content"><div class="step-title">Enter details</div><div class="step-desc">Or paste a ready template — AI parses it automatically!</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Add photos (optional)</div><div class="step-desc">Up to 5 photos</div></div></div>
     <div class="step"><div class="step-num">5</div><div class="step-content"><div class="step-title">Done!</div><div class="step-desc">AI reviews → auto-posted to channel. No waiting for admin!</div></div></div>
   </div>
 </div>
@@ -690,21 +728,21 @@ body {
 <div class="section">
   <div class="section-title">Why Korea Hub?</div>
   <div class="features">
-    <div class="feature"><div class="feature-icon">⚡️</div><div class="feature-title">24/7 Active</div><div class="feature-desc">Post anytime, no admin needed</div></div>
-    <div class="feature"><div class="feature-icon">🤖</div><div class="feature-title">AI-Powered</div><div class="feature-desc">AI reviews and improves your listing</div></div>
-    <div class="feature"><div class="feature-icon">🆓</div><div class="feature-title">Free</div><div class="feature-desc">1 free listing per month</div></div>
-    <div class="feature"><div class="feature-icon">🛡</div><div class="feature-title">Trusted</div><div class="feature-desc">Real people only — no bots or spam</div></div>
+    <div class="feature"><span class="feature-icon">⚡️</span><div class="feature-title">24/7 Active</div><div class="feature-desc">Post anytime, no admin needed</div></div>
+    <div class="feature"><span class="feature-icon">🤖</span><div class="feature-title">AI-Powered</div><div class="feature-desc">AI reviews and improves your listing</div></div>
+    <div class="feature"><span class="feature-icon">🆓</span><div class="feature-title">Free Now</div><div class="feature-desc">All listings are currently free!</div></div>
+    <div class="feature"><span class="feature-icon">🛡</span><div class="feature-title">Trusted</div><div class="feature-desc">Real people only — no bots or spam</div></div>
   </div>
 </div>
 
 <div class="section">
   <div class="section-title">Admin</div>
   <div class="admin-card">
-    <div class="admin-avatar">👤</div>
+    <div class="admin-avatar">AB</div>
     <div>
       <div class="admin-name">Abdulloh</div>
       <div class="admin-user">@Yuoonee</div>
-      <div class="admin-role">Korea Hub Admin • 🇰🇷 Seoul</div>
+      <div class="admin-role">Korea Hub Admin · 🇰🇷 Seoul</div>
     </div>
   </div>
 </div>
@@ -712,25 +750,33 @@ body {
 <div class="cta">
   <div class="cta-title">Join now! 🚀</div>
   <div class="cta-sub">One link — subscribe to all 3 channels</div>
-  <a class="cta-btn" onclick="openLink('https://t.me/addlist/jNJ7xBYHuBszMmM1')">Subscribe →</a>
+  <a class="cta-btn" href="https://t.me/addlist/jNJ7xBYHuBszMmM1" onclick="openLink('https://t.me/addlist/jNJ7xBYHuBszMmM1');return false;">Subscribe →</a>
 </div>
 
-</div>
+</div><!-- /lang-en -->
 
 <script>
-// Telegram WebApp init
 const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
+  if (tg.colorScheme === 'light') {
+    const r = document.documentElement.style;
+    r.setProperty('--bg',     '#f0f4ff');
+    r.setProperty('--bg2',    '#ffffff');
+    r.setProperty('--bg3',    '#e8edf8');
+    r.setProperty('--text',   '#0f172a');
+    r.setProperty('--muted',  '#64748b');
+    r.setProperty('--border', 'rgba(0,0,0,0.07)');
+  }
 }
 
-function setLang(lang) {
+function setLang(lang, btn) {
   document.querySelectorAll('.lang-content').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('lang-' + lang).classList.add('active');
-  event.target.classList.add('active');
-  window.scrollTo(0, 0);
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function openLink(url) {
@@ -739,11 +785,6 @@ function openLink(url) {
   } else {
     window.open(url, '_blank');
   }
-}
-
-// Auto-detect Telegram theme
-if (tg?.colorScheme === 'light') {
-  document.documentElement.setAttribute('data-theme', 'light');
 }
 </script>
 </body>
